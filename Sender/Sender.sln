@@ -7,6 +7,8 @@ Project("{34036844-64E7-43A5-9151-4AD90E180989}") = "Sender", "Sender\Sender.iot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SenderModule", "SenderModule\SenderModule.csproj", "{47B3FDDC-E152-46CC-BC6B-E6941046AAE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reader", "Reader\Reader.csproj", "{4737B267-B01A-49C2-AEF1-208EF6BFA78C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{47B3FDDC-E152-46CC-BC6B-E6941046AAE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47B3FDDC-E152-46CC-BC6B-E6941046AAE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47B3FDDC-E152-46CC-BC6B-E6941046AAE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4737B267-B01A-49C2-AEF1-208EF6BFA78C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4737B267-B01A-49C2-AEF1-208EF6BFA78C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4737B267-B01A-49C2-AEF1-208EF6BFA78C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4737B267-B01A-49C2-AEF1-208EF6BFA78C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

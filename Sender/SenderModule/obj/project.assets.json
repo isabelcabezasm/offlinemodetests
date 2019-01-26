@@ -6994,11 +6994,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\isacabe\\source\\repos\\Sender\\SenderModule\\SenderModule.csproj",
+      "projectUniqueName": "C:\\Users\\isacabe\\Source\\Repos\\isabelcabezasm\\offlinemodetests\\Sender\\SenderModule\\SenderModule.csproj",
       "projectName": "SenderModule",
-      "projectPath": "C:\\Users\\isacabe\\source\\repos\\Sender\\SenderModule\\SenderModule.csproj",
+      "projectPath": "C:\\Users\\isacabe\\Source\\Repos\\isabelcabezasm\\offlinemodetests\\Sender\\SenderModule\\SenderModule.csproj",
       "packagesPath": "C:\\Users\\isacabe\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\isacabe\\source\\repos\\Sender\\SenderModule\\obj\\",
+      "outputPath": "C:\\Users\\isacabe\\Source\\Repos\\isabelcabezasm\\offlinemodetests\\Sender\\SenderModule\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
