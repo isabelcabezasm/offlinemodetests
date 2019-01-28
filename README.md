@@ -30,6 +30,12 @@ https://docs.microsoft.com/en-us/azure/iot-edge/how-to-visual-studio-develop-csh
 (The current template in VS2017 only creates the docker image for AMD64)
 
 I added my dockerfile: 
+https://github.com/isabelcabezasm/offlinemodetests/blob/master/Sender/SenderModule/Dockerfile.arm32v7
+
+Add the "RuntimeIdentifiers" in the .csproj file: (Look here: https://github.com/isabelcabezasm/offlinemodetests/blob/master/Sender/SenderModule/SenderModule.csproj)
+*<RuntimeIdentifiers>win-arm;linux-arm</RuntimeIdentifiers>*
++ Help (.NET Core on Raspberry Pi)https://github.com/dotnet/core/blob/master/samples/RaspberryPiInstructions.md
+
 
 ### Steps to compile/build the docker image for ARM from Windows:
 docker build . -f Dockerfile.arm32v7 -t name_your_container_repository.azurecr.io/iotedgemodule1:0.1-arm
