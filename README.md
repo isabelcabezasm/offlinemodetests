@@ -40,10 +40,10 @@ Add the "RuntimeIdentifiers" in the .csproj file: (Look here: https://github.com
 
  *Help* (.NET Core on Raspberry Pi)https://github.com/dotnet/core/blob/master/samples/RaspberryPiInstructions.md
 
-    (The dockerfile is the same is generated for the IoT Edge Module template:
-    https://github.com/isabelcabezasm/offlinemodetests/blob/master/Sender/SenderModule/Dockerfile.amd64     
-    but publishing *dotnet publish -r linux-arm*     
-    and using the *dotnet runtime arm32v7*)
+(The dockerfile is the same is generated for the IoT Edge Module template:
+https://github.com/isabelcabezasm/offlinemodetests/blob/master/Sender/SenderModule/Dockerfile.amd64     
+but publishing *dotnet publish -r linux-arm*     
+and using the *dotnet runtime arm32v7*)
 
 ### Steps to compile/build the docker image for ARM from Windows:
 <pre> <code>
