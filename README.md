@@ -13,11 +13,12 @@ https://github.com/isabelcabezasm/offlinemodetests/blob/master/Sender/SenderModu
 You should add your own IoT Hub settings in this file: 
 https://github.com/isabelcabezasm/offlinemodetests/blob/master/Sender/Reader/Program.cs
 It reads **all** the messages in the IoT Hub. Not "from Now", not "from last checkpoint".
-*var eventHubReceiver = s_eventHubClient.CreateReceiver("$Default", partition, EventPosition.FromStart());*
+
+  *var eventHubReceiver = s_eventHubClient.CreateReceiver("$Default", partition, EventPosition.FromStart());*
 
 
 ## Add the IoT Edge Module to the Raspberry Pi 3:
-From my development machine, with Windows 10 and Visual Studio 2017.
+From my development machine, with Windows 10 and Visual Studio 2017.  
 Docker for Windows installed.
 
 You can test it in localhost:
@@ -33,8 +34,11 @@ I added my dockerfile:
 https://github.com/isabelcabezasm/offlinemodetests/blob/master/Sender/SenderModule/Dockerfile.arm32v7
 
 Add the "RuntimeIdentifiers" in the .csproj file: (Look here: https://github.com/isabelcabezasm/offlinemodetests/blob/master/Sender/SenderModule/SenderModule.csproj)
-*<RuntimeIdentifiers>win-arm;linux-arm</RuntimeIdentifiers>*
-+ Help (.NET Core on Raspberry Pi)https://github.com/dotnet/core/blob/master/samples/RaspberryPiInstructions.md
+<pre><code>
+<RuntimeIdentifiers>win-arm;linux-arm</RuntimeIdentifiers> 
+</code></pre>
+
+ *Help* (.NET Core on Raspberry Pi)https://github.com/dotnet/core/blob/master/samples/RaspberryPiInstructions.md
 (The dockerfile is the same is generated for the IoT Edge Module template: https://github.com/isabelcabezasm/offlinemodetests/blob/master/Sender/SenderModule/Dockerfile.amd64 but publishing *dotnet publish -r linux-arm* and using the *dotnet runtime arm32v7*)
 
 ### Steps to compile/build the docker image for ARM from Windows:
