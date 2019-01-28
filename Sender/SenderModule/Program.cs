@@ -16,22 +16,6 @@ namespace SenderModule
          static void Main(string[] args)
         {
             Init().Wait();
-
-            // Wait until the app unloads or is cancelled
-            var cts = new CancellationTokenSource();
-            AssemblyLoadContext.Default.Unloading += (ctx) => cts.Cancel();
-            Console.CancelKeyPress += (sender, cpe) => cts.Cancel();
-            WhenCancelled(cts.Token).Wait();
-        }
-
-        /// <summary>
-        /// Handles cleanup operations when app is cancelled or unloads
-        /// </summary>
-        public static Task WhenCancelled(CancellationToken cancellationToken)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).SetResult(true), tcs);
-            return tcs.Task;
         }
 
         /// <summary>
@@ -39,8 +23,7 @@ namespace SenderModule
         /// messages containing temperature information
         /// </summary>
         static async Task Init()
-        {
-       
+        {      
 
             AmqpTransportSettings amqpSetting = new AmqpTransportSettings(TransportType.Amqp_Tcp_Only);
             ITransportSettings[] settings = { amqpSetting };
@@ -53,20 +36,19 @@ namespace SenderModule
            
         }
 
-      
+
         /// <summary>
 
         /// Module behavior:
-
         ///        Sends data periodically (with default frequency of 1/3 seconds).
-
         /// </summary>
 
         static async Task SendEvents(ModuleClient moduleClient)
         {
             int count = 1; //messages counter
 
-            while (true) {
+            while (true)
+            {
 
                 var tempData = "{'count':" + count + "}";
                 string dataBuffer = JsonConvert.SerializeObject(tempData);
@@ -76,7 +58,7 @@ namespace SenderModule
                 count++;
                 await Task.Delay(333);
             }
-            
+
         }
 
 

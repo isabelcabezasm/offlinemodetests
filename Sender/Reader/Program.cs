@@ -17,15 +17,16 @@ namespace Reader
         
         private static EventHubClient s_eventHubClient;
 
-        // az iot hub policy show --name iothubowner --query primaryKey --hub-name {your IoT Hub name}
-        private readonly static string s_eventHubsCompatibleEndpoint = "WRITE THE EVENT HUB COMPATIBLE ENDPOINT HERE";
+        // az iot hub show --query properties.eventHubEndpoints.events.endpoint --name {your IoT Hub name}
+        //Replace the value of the variable with the Event Hubs-compatible endpoint.
+        private readonly static string s_eventHubsCompatibleEndpoint = "{your Event Hubs compatible endpoint}";
 
         // Event Hub-compatible name
         // az iot hub show --query properties.eventHubEndpoints.events.path --name {your IoT Hub name}
-        private readonly static string s_eventHubsCompatiblePath = "WRITE THE NAME HERE";
+        private readonly static string s_eventHubsCompatiblePath = "{your Event Hubs compatible name}";
 
         // az iot hub policy show --name iothubowner --query primaryKey --hub-name {your IoT Hub name}
-        private readonly static string s_iotHubSasKey = "WRITE THE KEY HERE";
+        private readonly static string s_iotHubSasKey = "{your iothubowner primary key}";
         private readonly static string s_iotHubSasKeyName = "iothubowner";
 
         public static void Main(string[] args)

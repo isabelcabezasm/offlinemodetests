@@ -1,0 +1,11 @@
+C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\SenderModule\bin\Debug\netcoreapp2.1\SenderModule.deps.json
+C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\SenderModule\bin\Debug\netcoreapp2.1\SenderModule.runtimeconfig.json
+C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\SenderModule\bin\Debug\netcoreapp2.1\SenderModule.runtimeconfig.dev.json
+C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\SenderModule\bin\Debug\netcoreapp2.1\SenderModule.dll
+C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\SenderModule\bin\Debug\netcoreapp2.1\SenderModule.pdb
+C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\SenderModule\obj\Debug\netcoreapp2.1\SenderModule.csprojAssemblyReference.cache
+C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\SenderModule\obj\Debug\netcoreapp2.1\SenderModule.csproj.CoreCompileInputs.cache
+C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\SenderModule\obj\Debug\netcoreapp2.1\SenderModule.AssemblyInfoInputs.cache
+C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\SenderModule\obj\Debug\netcoreapp2.1\SenderModule.AssemblyInfo.cs
+C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\SenderModule\obj\Debug\netcoreapp2.1\SenderModule.dll
+C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\SenderModule\obj\Debug\netcoreapp2.1\SenderModule.pdb
