@@ -46,8 +46,9 @@ Add the "RuntimeIdentifiers" in the .csproj file: (Look here: https://github.com
     and using the *dotnet runtime arm32v7*)
 
 ### Steps to compile/build the docker image for ARM from Windows:
+<pre> <code>
 docker build . -f Dockerfile.arm32v7 -t *name_your_container_repository*.azurecr.io/iotedgemodule1:0.1-arm
 
 docker push *name_your_container_repository*.azurecr.io/iotedgemodule1:0.1-arm
-
+</code> </pre>
 
