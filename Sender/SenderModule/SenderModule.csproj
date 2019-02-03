@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectCapability Include="AzureIoTEdgeModule"/>
+    <ProjectCapability Include="AzureIoTEdgeModule" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,744 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Azure.EventHubs.Processor</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.BlobErrorCodeStrings">
+            <summary>
+            BlobErrorCodeStrings isn't public in Storage UWP API, therefore we need to provide error code strings here.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.Checkpoint">
+            <summary>
+            The context object used to preserve state in the stream.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.Checkpoint.#ctor(System.String)">
+            <summary>
+            Creates a new Checkpoint for a particular partition ID.
+            </summary>
+            <param name="partitionId">The partition ID for the checkpoint</param>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.Checkpoint.#ctor(System.String,System.String,System.Int64)">
+            <summary>
+            Creates a new Checkpoint for a particular partition ID, with the offset and sequence number.
+            </summary>
+            <param name="partitionId">The partition ID for the checkpoint</param>
+            <param name="offset">The offset for the last processed <see cref="T:Microsoft.Azure.EventHubs.EventData" /></param>
+            <param name="sequenceNumber">The sequence number of the last processed <see cref="T:Microsoft.Azure.EventHubs.EventData" /></param>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.Checkpoint.#ctor(Microsoft.Azure.EventHubs.Processor.Checkpoint)">
+            <summary>
+            Creates a new Checkpoint from an existing checkpoint.
+            </summary>
+            <param name="source">The existing checkpoint to copy</param>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.Checkpoint.Offset">
+            <summary>
+            Gets or sets the offset of the last processed <see cref="T:Microsoft.Azure.EventHubs.EventData" />.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.Checkpoint.SequenceNumber">
+            <summary>
+            Gets or sets the sequence number of the last processed <see cref="T:Microsoft.Azure.EventHubs.EventData" />.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.Checkpoint.PartitionId">
+            <summary>
+            Gets the partition ID for the corresponding checkpoint.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.CloseReason">
+            <summary>
+            Reason for closing an <see cref="T:Microsoft.Azure.EventHubs.Processor.EventProcessorHost" />.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.EventHubs.Processor.CloseReason.LeaseLost">
+            <summary>
+            The lease was lost or transitioned to a new processor instance. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.EventHubs.Processor.CloseReason.Shutdown">
+            <summary>
+            The <see cref="T:Microsoft.Azure.EventHubs.Processor.EventProcessorHost" /> was shutdown.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.EventProcessorConfigurationException">
+            <summary>
+            An exception which specifies that the <see cref="T:Microsoft.Azure.EventHubs.Processor.EventProcessorHost" /> configuration is incorrect.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.EventProcessorHost">
+            <summary>
+            Represents a host for processing Event Hubs event data.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.#ctor(System.String,System.String,System.String,System.String,System.String)">
+             <summary>
+             Create a new host to process events from an Event Hub.
+             
+             <para>Since Event Hubs are frequently used for scale-out, high-traffic scenarios, generally there will
+             be only one host per process, and the processes will be run on separate machines. However, it is
+             supported to run multiple hosts on one machine, or even within one process, if throughput is not
+             a concern.</para>
+            
+             This overload of the constructor uses the default, built-in lease and checkpoint managers. The
+             Azure Storage account specified by the storageConnectionString parameter is used by the built-in
+             managers to record leases and checkpoints.
+             </summary>
+             <param name="eventHubPath">The name of the EventHub.</param>
+             <param name="consumerGroupName">The name of the consumer group within the Event Hub.</param>
+             <param name="eventHubConnectionString">Connection string for the Event Hub to receive from.</param>
+             <param name="storageConnectionString">Connection string to Azure Storage account used for leases and checkpointing.</param>
+             <param name="leaseContainerName">Azure Storage container name for use by built-in lease and checkpoint manager.</param>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Create a new host to process events from an Event Hub.
+            
+            <para>This overload of the constructor uses the default, built-in lease and checkpoint managers.</para>
+            </summary>
+            <param name="hostName">A name for this event processor host. See method notes.</param>
+            <param name="eventHubPath">The name of the EventHub.</param>
+            <param name="consumerGroupName">The name of the consumer group within the Event Hub.</param>
+            <param name="eventHubConnectionString">Connection string for the Event Hub to receive from.</param>
+            <param name="storageConnectionString">Connection string to Azure Storage account used for leases and checkpointing.</param>
+            <param name="leaseContainerName">Azure Storage container name for use by built-in lease and checkpoint manager.</param>
+            <param name="storageBlobPrefix">Prefix used when naming blobs within the storage container.</param>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.#ctor(System.String,System.String,System.String,System.String,Microsoft.Azure.EventHubs.Processor.ICheckpointManager,Microsoft.Azure.EventHubs.Processor.ILeaseManager)">
+            <summary>
+            Create a new host to process events from an Event Hub.
+            
+            <para>This overload of the constructor allows maximum flexibility.
+            This one allows the caller to specify the name of the processor host as well.
+            The overload also allows the caller to provide their own lease and checkpoint managers to replace the built-in
+            ones based on Azure Storage.</para>
+            </summary>
+            <param name="hostName">Name of the processor host. MUST BE UNIQUE. Strongly recommend including a Guid to ensure uniqueness.</param>
+            <param name="eventHubPath">The name of the EventHub.</param>
+            <param name="consumerGroupName">The name of the consumer group within the Event Hub.</param>
+            <param name="eventHubConnectionString">Connection string for the Event Hub to receive from.</param>
+            <param name="checkpointManager">Object implementing ICheckpointManager which handles partition checkpointing.</param>
+            <param name="leaseManager">Object implementing ILeaseManager which handles leases for partitions.</param>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.#ctor(System.Uri,System.String,System.String,Microsoft.Azure.EventHubs.ITokenProvider,Microsoft.WindowsAzure.Storage.CloudStorageAccount,System.String)">
+            <summary>
+            Create a new host to process events from an Event Hub with provided <see cref="T:Microsoft.Azure.EventHubs.TokenProvider" />
+            </summary>
+            <param name="endpointAddress">Fully qualified domain name for Event Hubs. Most likely, {yournamespace}.servicebus.windows.net</param>
+            <param name="eventHubPath">The name of the EventHub.</param>
+            <param name="consumerGroupName">The name of the consumer group within the Event Hub.</param>
+            <param name="tokenProvider">Token provider which will generate security tokens for authorization.</param>
+            <param name="cloudStorageAccount">Azure Storage account used for leases and checkpointing.</param>
+            <param name="leaseContainerName">Azure Storage container name for use by built-in lease and checkpoint manager.</param>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.#ctor(System.String,System.Uri,System.String,System.String,Microsoft.Azure.EventHubs.ITokenProvider,Microsoft.WindowsAzure.Storage.CloudStorageAccount,System.String,System.String,System.Nullable{System.TimeSpan},Microsoft.Azure.EventHubs.TransportType)">
+            <summary>
+            Create a new host to process events from an Event Hub with provided <see cref="T:Microsoft.Azure.EventHubs.TokenProvider" />
+            </summary>
+            <param name="hostName">Name of the processor host. MUST BE UNIQUE. Strongly recommend including a Guid to ensure uniqueness.</param>
+            <param name="endpointAddress">Fully qualified domain name for Event Hubs. Most likely, {yournamespace}.servicebus.windows.net</param>
+            <param name="eventHubPath">The name of the EventHub.</param>
+            <param name="consumerGroupName">The name of the consumer group within the Event Hub.</param>
+            <param name="tokenProvider">Token provider which will generate security tokens for authorization.</param>
+            <param name="cloudStorageAccount">Azure Storage account used for leases and checkpointing.</param>
+            <param name="leaseContainerName">Azure Storage container name for use by built-in lease and checkpoint manager.</param>
+            <param name="storageBlobPrefix">Prefix used when naming blobs within the storage container.</param>
+            <param name="operationTimeout">Operation timeout for Event Hubs operations.</param>
+            <param name="transportType">Transport type on connection.</param>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.HostName">
+            <summary>
+            Returns processor host name.
+            If the processor host name was automatically generated, this is the only way to get it.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.EventHubPath">
+            <summary>
+            Gets the event hub path.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.ConsumerGroupName">
+            <summary>
+            Gets the consumer group name.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.EndpointAddress">
+            <summary>
+            Gets the event endpoint URI.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.TransportType">
+            <summary>
+            Gets the transport type.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.OperationTimeout">
+            <summary>
+            Gets the operation timeout.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.PartitionManagerOptions">
+            <summary>Gets or sets the 
+            <see cref="P:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.PartitionManagerOptions" /> instance used by the 
+            <see cref="T:Microsoft.Azure.EventHubs.Processor.EventProcessorHost" /> object.</summary> 
+            <value>The <see cref="P:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.PartitionManagerOptions" /> instance.</value>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.RegisterEventProcessorAsync``1">
+            <summary>
+            This registers <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessor" /> implementation with the host using <see cref="T:Microsoft.Azure.EventHubs.Processor.DefaultEventProcessorFactory`1" />.  
+            This also starts the host and causes it to start participating in the partition distribution process.
+            </summary>
+            <typeparam name="T">Implementation of your application specific <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessor" />.</typeparam>
+            <returns>A task to indicate EventProcessorHost instance is started.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.RegisterEventProcessorAsync``1(Microsoft.Azure.EventHubs.Processor.EventProcessorOptions)">
+            <summary>
+            This registers <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessor" /> implementation with the host using <see cref="T:Microsoft.Azure.EventHubs.Processor.DefaultEventProcessorFactory`1" />.  
+            This also starts the host and causes it to start participating in the partition distribution process.
+            </summary>
+            <typeparam name="T">Implementation of your application specific <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessor" />.</typeparam>
+            <param name="processorOptions"><see cref="P:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.EventProcessorOptions" /> to control various aspects of message pump created when ownership 
+            is acquired for a particular partition of EventHub.</param>
+            <returns>A task to indicate EventProcessorHost instance is started.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.RegisterEventProcessorFactoryAsync(Microsoft.Azure.EventHubs.Processor.IEventProcessorFactory)">
+            <summary>
+            This registers <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessorFactory" /> implementation with the host which is used to create an instance of 
+            <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessor" /> when it takes ownership of a partition.  This also starts the host and causes it to start participating 
+            in the partition distribution process.
+            </summary>
+            <param name="factory">Instance of <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessorFactory" /> implementation.</param>
+            <returns>A task to indicate EventProcessorHost instance is started.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.RegisterEventProcessorFactoryAsync(Microsoft.Azure.EventHubs.Processor.IEventProcessorFactory,Microsoft.Azure.EventHubs.Processor.EventProcessorOptions)">
+            <summary>
+            This registers <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessorFactory" /> implementation with the host which is used to create an instance of 
+            <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessor" /> when it takes ownership of a partition.  This also starts the host and causes it to start participating 
+            in the partition distribution process.
+            </summary>
+            <param name="factory">Instance of <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessorFactory" /> implementation.</param>
+            <param name="processorOptions"><see cref="P:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.EventProcessorOptions" /> to control various aspects of message pump created when ownership 
+            is acquired for a particular partition of EventHub.</param>
+            <returns>A task to indicate EventProcessorHost instance is started.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.UnregisterEventProcessorAsync">
+            <summary>
+            Stop processing events.  Does not return until the shutdown is complete.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorHost.CreateHostName(System.String)">
+            <summary>
+            Convenience method for generating unique host names, safe to pass to the EventProcessorHost constructors
+            that take a hostName argument.
+             
+            If a prefix is supplied, the constructed name begins with that string. If the prefix argument is null or
+            an empty string, the constructed name begins with "host". Then a dash '-' and a unique ID are appended to
+            create a unique name.
+            </summary>
+            <param name="prefix">String to use as the beginning of the name. If null or empty, a default is used.</param>
+            <returns>A unique host name to pass to EventProcessorHost constructors.</returns>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions">
+            <summary>
+            Defines the runtime options when registering an <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessor" /> interface with an EventHubConsumerGroup. This is also the mechanism for catching exceptions from an IEventProcessor instance used by an <see cref="T:Microsoft.Azure.EventHubs.Processor.EventProcessorHost" /> object.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions.DefaultOptions">
+            <summary>
+            Returns an EventProcessorOptions instance with all options set to the default values.
+            The default values are:
+            <para>MaxBatchSize: 10</para>
+            <para>ReceiveTimeOut: 1 minute</para>
+            <para>PrefetchCount: 300</para>
+            <para>InitialOffsetProvider: uses the last offset checkpointed, or StartOfStream</para>
+            <para>InvokeProcessorAfterReceiveTimeout: false</para>
+            </summary>
+            <value>an EventProcessorOptions instance with all options set to the default values</value>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions.#ctor">
+            <summary>
+            Creates a new <see cref="T:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions" /> object.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions.SetExceptionHandler(System.Action{Microsoft.Azure.EventHubs.Processor.ExceptionReceivedEventArgs})">
+            <summary>
+            Sets a handler which receives notification of general exceptions.
+            <para>Exceptions which occur while processing events from a particular Event Hub partition are delivered
+            to the onError method of the event processor for that partition. This handler is called on occasions
+            when there is no event processor associated with the throwing activity, or the event processor could
+            not be created.</para>
+            </summary>
+            <param name="exceptionHandler">Handler which is called when an exception occurs. Set to null to stop handling.</param>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions.MaxBatchSize">
+            <summary>
+            Returns the maximum size of an event batch that IEventProcessor.ProcessEventsAsync will be called with
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions.ReceiveTimeout">
+            <summary>
+            Gets or sets the timeout length for receive operations.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions.EnableReceiverRuntimeMetric">
+            <summary> Gets or sets a value indicating whether the runtime metric of a receiver is enabled. </summary>
+            <value> true if a client wants to access <see cref="T:Microsoft.Azure.EventHubs.ReceiverRuntimeInformation" /> using <see cref="T:Microsoft.Azure.EventHubs.Processor.PartitionContext" />.</value>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions.PrefetchCount">
+            <summary>
+            Gets or sets the current prefetch count for the underlying client.
+            The default is 300.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions.InitialOffsetProvider">
+            <summary>
+            Gets or sets a delegate which is used to get the initial position for a given partition to create <see cref="T:Microsoft.Azure.EventHubs.PartitionReceiver" />.
+            Delegate is invoked by passing in PartitionId and then user can return <see cref="T:Microsoft.Azure.EventHubs.PartitionReceiver" /> for receiving messages.
+            This is only used when <see cref="P:Microsoft.Azure.EventHubs.Processor.Lease.Offset" /> is not provided and receiver is being created for the very first time.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions.InvokeProcessorAfterReceiveTimeout">
+            <summary>
+            Returns whether the EventProcessorHost will call IEventProcessor.OnEvents(null) when a receive
+            timeout occurs (true) or not (false).
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions.WebProxy">
+            <summary>
+            Gets or sets the web proxy.
+            A proxy is applicable only when transport type is set to AmqpWebSockets.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.EventProcessorRuntimeException">
+            <summary>
+            An exception thrown during event processing.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.EventProcessorRuntimeException.Action">
+            <summary>
+            Gets the action that was being performed when the exception occured.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.ExceptionReceivedEventArgs">
+            <summary>
+            Provides data for the <see cref="M:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions.NotifyOfException(System.String,System.String,System.Exception,System.String)" /> event.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.ExceptionReceivedEventArgs.Hostname">
+            <summary>
+            Allows distinguishing the error source if multiple hosts in a single process.
+            </summary>
+            <value>The name of the host that experienced the exception.</value>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.ExceptionReceivedEventArgs.PartitionId">
+            <summary>
+            Allows distinguishing the error source if multiple hosts in a single process.
+            </summary>
+            <value>The partition id that experienced the exception.</value>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.ExceptionReceivedEventArgs.Exception">
+            <summary>
+            The exception that was thrown.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.ExceptionReceivedEventArgs.Action">
+            <summary>
+            A short string that indicates what general activity threw the exception.
+            See EventProcessorHostActionString for a list of possible values.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.ICheckpointManager">
+            <summary>
+            If you wish to have EventProcessorHost store checkpoints somewhere other than Azure Storage,
+            you can write your own checkpoint manager using this interface.  
+            
+            <para>The Azure Storage managers use the same storage for both lease and checkpoints, so both
+            interfaces are implemented by the same class. You are free to do the same thing if you have
+            a unified store for both types of data.</para>
+            
+            <para>This interface does not specify initialization methods because we have no way of knowing what
+            information your implementation will require.</para>
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ICheckpointManager.CheckpointStoreExistsAsync">
+            <summary>
+            Does the checkpoint store exist?
+            </summary>
+            <returns>true if it exists, false if not</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ICheckpointManager.CreateCheckpointStoreIfNotExistsAsync">
+            <summary>
+            Create the checkpoint store if it doesn't exist. Do nothing if it does exist.
+            </summary>
+            <returns>true if the checkpoint store already exists or was created OK, false if there was a failure</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ICheckpointManager.GetCheckpointAsync(System.String)">
+            <summary>
+            Get the checkpoint data associated with the given partition. Could return null if no checkpoint has
+            been created for that partition.
+            </summary>
+            <param name="partitionId">Id of partition to get checkpoint info for.</param>
+            <returns>Checkpoint info for the given partition, or null if none has been previously stored.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ICheckpointManager.UpdateCheckpointAsync(Microsoft.Azure.EventHubs.Processor.Checkpoint)">
+            <summary>
+            Update the checkpoint in the store with the offset/sequenceNumber in the provided checkpoint.
+            </summary>
+            <param name="checkpoint">offset/sequeceNumber to update the store with.</param>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ICheckpointManager.CreateCheckpointIfNotExistsAsync(System.String)">
+            <summary>
+            Create the checkpoint for the given partition if it doesn't exist. Do nothing if it does exist.
+            The offset/sequenceNumber for a freshly-created checkpoint should be set to StartOfStream/0.
+            </summary>
+            <param name="partitionId">Id of partition to create the checkpoint for.</param>
+            <returns>The checkpoint for the given partition, whether newly created or already existing.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ICheckpointManager.UpdateCheckpointAsync(Microsoft.Azure.EventHubs.Processor.Lease,Microsoft.Azure.EventHubs.Processor.Checkpoint)">
+            <summary>
+            Update the checkpoint in the store with the offset/sequenceNumber in the provided checkpoint.
+            </summary>
+            <param name="lease">Partition information against which to perform a checkpoint.</param>
+            <param name="checkpoint">offset/sequeceNumber to update the store with.</param>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ICheckpointManager.DeleteCheckpointAsync(System.String)">
+            <summary>
+            Delete the stored checkpoint for the given partition. If there is no stored checkpoint for the
+            given partition, that is treated as success.
+            </summary>
+            <param name="partitionId">id of partition to delete checkpoint from store</param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.IEventProcessor">
+            <summary>
+            Interface that must be implemented by event processor classes.
+            
+            <para>Any given instance of an event processor class will only process events from one partition
+            of one Event Hub. A PartitionContext is provided with each call to the event processor because
+            some parameters could change, but it will always be the same partition.</para>
+            
+            <para>Although EventProcessorHost is multithreaded, calls to a given instance of an event processor
+            class are serialized, except for OnError(). OnOpen() is called first, then OnEvents() will be called zero or more
+            times. When the event processor needs to be shut down, whether because there was a failure
+            somewhere, or the lease for the partition has been lost, or because the entire processor host
+            is being shut down, OnClose() is called after the last OnEvents() call returns.</para>
+            
+            <para>OnError() could be called while OnEvents() or OnClose() is executing. No synchronization is attempted
+            in order to avoid possibly deadlocking.</para>
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.IEventProcessor.OpenAsync(Microsoft.Azure.EventHubs.Processor.PartitionContext)">
+            <summary>
+            Called by processor host to initialize the event processor.
+            </summary>
+            <param name="context">Information about the partition that this event processor will process events from.</param>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.IEventProcessor.CloseAsync(Microsoft.Azure.EventHubs.Processor.PartitionContext,Microsoft.Azure.EventHubs.Processor.CloseReason)">
+            <summary>
+            Called by processor host to indicate that the event processor is being stopped.
+            </summary>
+            <param name="context">Information about the partition.</param>
+            <param name="reason">Reason why the event processor is being stopped.</param>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.IEventProcessor.ProcessEventsAsync(Microsoft.Azure.EventHubs.Processor.PartitionContext,System.Collections.Generic.IEnumerable{Microsoft.Azure.EventHubs.EventData})">
+            <summary>
+            Called by the processor host when a batch of events has arrived.
+            <para>This is where the real work of the event processor is done.</para>
+            </summary>
+            <param name="context">Information about the partition.</param>
+            <param name="messages">The events to be processed.</param>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.IEventProcessor.ProcessErrorAsync(Microsoft.Azure.EventHubs.Processor.PartitionContext,System.Exception)">
+            <summary>
+            Called when the underlying client experiences an error while receiving. EventProcessorHost will take
+            care of recovering from the error and continuing to pump messages, so no action is required from
+            your code. This method is provided for informational purposes.
+            </summary>
+            <param name="context">Information about the partition.</param>
+            <param name="error">The error that occured.</param>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.IEventProcessorFactory">
+            <summary>
+            Interface that must be implemented by an event processor factory class.
+            
+            <para>User-provided factories are needed if creating an event processor object requires more work than
+            just a new with a parameterless constructor.</para>
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.IEventProcessorFactory.CreateEventProcessor(Microsoft.Azure.EventHubs.Processor.PartitionContext)">
+            <summary>
+            Method to create instance of <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessor" /> given a partition.
+            </summary>
+            <param name="context">Partition context information.</param> 
+            <returns>An instance of <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessor" />.</returns>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.ILeaseManager">
+            <summary>
+            If you wish to have EventProcessorHost store leases somewhere other than Azure Storage,
+            you can write your own lease manager using this interface.  
+            
+            <para>The Azure Storage managers use the same storage for both lease and checkpoints, so both
+            interfaces are implemented by the same class. You are free to do the same thing if you have
+            a unified store for both types of data.</para>
+            
+            <para>This interface does not specify initialization methods because we have no way of knowing what
+            information your implementation will require.</para>
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.ILeaseManager.LeaseRenewInterval">
+            <summary>
+            Allows a lease manager implementation to specify to PartitionManager how often it should
+            scan leases and renew them. In order to redistribute leases in a timely fashion after a host
+            ceases operating, we recommend a relatively short interval, such as ten seconds. Obviously it
+            should be less than half of the lease length, to prevent accidental expiration.
+            </summary>
+            <value>The sleep interval between scans</value>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.ILeaseManager.LeaseDuration">
+            <summary>
+            Mostly useful for testing.
+            </summary>
+            <value>Duration of a lease before it expires unless renewed.</value>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ILeaseManager.LeaseStoreExistsAsync">
+            <summary>
+            Does the lease store exist?
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ILeaseManager.CreateLeaseStoreIfNotExistsAsync">
+            <summary>
+            Create the lease store if it does not exist, do nothing if it does exist.
+            </summary>
+            <returns>true if the lease store already exists or was created successfully, false if not</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ILeaseManager.DeleteLeaseStoreAsync">
+            <summary>
+            Not used by EventProcessorHost, but a convenient function to have for testing.
+            </summary>
+            <returns>true if the lease store was deleted successfully, false if not</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ILeaseManager.GetLeaseAsync(System.String)">
+            <summary>
+            Return the lease info for the specified partition. Can return null if no lease has been
+            created in the store for the specified partition.
+            </summary>
+            <param name="partitionId">id of partition to get lease for</param>
+            <returns>lease info for the partition, or null</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ILeaseManager.GetAllLeases">
+            <summary>
+            Return the lease info for all partitions.
+            A typical implementation could just call GetLeaseAsync() on all partitions.
+            </summary>
+            <returns>list of lease info.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ILeaseManager.CreateLeaseIfNotExistsAsync(System.String)">
+            <summary>
+            Create in the store the lease info for the given partition, if it does not exist. Do nothing if it does exist
+            in the store already. 
+            </summary>
+            <param name="partitionId">id of partition to create lease info for</param>
+            <returns>the existing or newly-created lease info for the partition</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ILeaseManager.DeleteLeaseAsync(Microsoft.Azure.EventHubs.Processor.Lease)">
+            <summary>
+            Delete the lease info for the given partition from the store. If there is no stored lease for the given partition,
+            that is treated as success.
+            </summary>
+            <param name="lease">Lease info for the desired partition as previously obtained from GetLeaseAsync()</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ILeaseManager.AcquireLeaseAsync(Microsoft.Azure.EventHubs.Processor.Lease)">
+            <summary>
+            Acquire the lease on the desired partition for this EventProcessorHost.
+            
+            <para>Note that it is legal to acquire a lease that is already owned by another host. Lease-stealing is how
+            partitions are redistributed when additional hosts are started.</para>
+            </summary>
+            <param name="lease">Lease info for the desired partition as previously obtained from GetLeaseAsync()</param>
+            <returns>true if the lease was acquired successfully, false if not</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ILeaseManager.RenewLeaseAsync(Microsoft.Azure.EventHubs.Processor.Lease)">
+            <summary>
+            Renew a lease currently held by this host.
+            
+            <para>If the lease has been stolen, or expired, or released, it is not possible to renew it. You will have to call getLease()
+            and then acquireLease() again.</para>
+            </summary>
+            <param name="lease">Lease to be renewed</param>
+            <returns>true if the lease was renewed successfully, false if not</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ILeaseManager.ReleaseLeaseAsync(Microsoft.Azure.EventHubs.Processor.Lease)">
+            <summary>
+            Give up a lease currently held by this host.
+            <para>If the lease has been stolen, or expired, releasing it is unnecessary, and will fail if attempted.</para>
+            </summary>
+            <param name="lease">Lease to be given up</param>
+            <returns>true if the lease was released successfully, false if not</returns>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.ILeaseManager.UpdateLeaseAsync(Microsoft.Azure.EventHubs.Processor.Lease)">
+            <summary>
+            Update the store with the information in the provided lease.
+            
+            <para>It is necessary to currently hold a lease in order to update it. If the lease has been stolen, or expired, or
+            released, it cannot be updated. Updating should renew the lease before performing the update to avoid lease
+            expiration during the process.</para>
+            </summary>
+            <param name="lease">New lease info to be stored</param>
+            <returns>true if the updated was performed successfully, false if not</returns>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.Lease">
+            <summary>
+            Contains partition ownership information.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.Lease.#ctor">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.Lease.#ctor(System.String)">
+            <summary></summary>
+            <param name="partitionId"></param>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.Lease.#ctor(Microsoft.Azure.EventHubs.Processor.Lease)">
+            <summary></summary>
+            <param name="source"></param>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.Lease.Offset">
+            <summary>
+            Gets or sets the current value for the offset in the stream.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.Lease.SequenceNumber">
+            <summary>
+            Gets or sets the last checkpointed sequence number in the stream.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.Lease.PartitionId">
+            <summary>
+            Gets the ID of the partition to which this lease belongs.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.Lease.Owner">
+            <summary>
+            Gets or sets the host owner for the partition.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.Lease.Token">
+            <summary>
+            Gets or sets the lease token that manages concurrency between hosts. You can use this token to guarantee single access to any resource needed by the <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessor" /> object.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.Lease.Epoch">
+            <summary>
+            Gets or sets the epoch year of the lease, which is a value you can use to determine the most recent owner of a partition between competing nodes.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.Lease.IsExpired">
+            <summary>
+            Determines whether the lease is expired.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.LeaseLostException">
+            <summary>
+            Represents an exception that occurs when the service lease has been lost.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.LeaseLostException.PartitionId">
+            <summary>
+            Gets the partition ID where the exception occured.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.PartitionContext">
+            <summary>
+            Encapsulates information related to an Event Hubs partition used by <see cref="T:Microsoft.Azure.EventHubs.Processor.IEventProcessor" />.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.PartitionContext.CancellationToken">
+            <summary>
+            Gets triggered when the partition gets closed.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.PartitionContext.ConsumerGroupName">
+            <summary>
+            Gets the name of the consumer group.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.PartitionContext.EventHubPath">
+            <summary>
+            Gets the path of the event hub.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.PartitionContext.PartitionId">
+            <summary>
+            Gets the partition ID for the context.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.PartitionContext.Owner">
+            <summary>
+            Gets the host owner for the partition.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.PartitionContext.RuntimeInformation">
+            <summary>
+            Gets the approximate receiver runtime information for a logical partition of an Event Hub.
+            To enable the setting, refer to <see cref="P:Microsoft.Azure.EventHubs.Processor.EventProcessorOptions.EnableReceiverRuntimeMetric" />
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.PartitionContext.Lease">
+            <summary>
+            Gets the most recent checkpointed lease.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.PartitionContext.CheckpointAsync">
+            <summary>
+            Writes the current offset and sequenceNumber to the checkpoint store via the checkpoint manager.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.PartitionContext.CheckpointAsync(Microsoft.Azure.EventHubs.EventData)">
+            <summary>
+            Stores the offset and sequenceNumber from the provided received EventData instance, then writes those
+            values to the checkpoint store via the checkpoint manager.
+            </summary>
+            <param name="eventData">A received EventData with valid offset and sequenceNumber</param>
+            <exception cref="T:System.ArgumentNullException">If suplied eventData is null</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">If the sequenceNumber is less than the last checkpointed value</exception>
+        </member>
+        <member name="M:Microsoft.Azure.EventHubs.Processor.PartitionContext.ToString">
+            <summary>
+            Provides the parition context in the following format:"PartitionContext({EventHubPath}/{ConsumerGroupName}/{PartitionId}/{SequenceNumber})"
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.Processor.PartitionManagerOptions">
+            <summary>
+            Options to control various aspects of partition distribution happening within <see cref="T:Microsoft.Azure.EventHubs.Processor.EventProcessorHost" /> instance.
+            </summary> 
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.PartitionManagerOptions.RenewInterval">
+            <summary>
+            Renew interval for all leases for partitions currently held by <see cref="T:Microsoft.Azure.EventHubs.Processor.EventProcessorHost" /> instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.EventHubs.Processor.PartitionManagerOptions.LeaseDuration">
+            <summary>
+            Interval for which the lease is taken on Azure Blob representing an EventHub partition.  If the lease is not renewed within this 
+            interval, it will cause it to expire and ownership of the partition will move to another <see cref="T:Microsoft.Azure.EventHubs.Processor.EventProcessorHost" /> instance.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.EventHubs.ProcessorEventSource">
+            <summary>
+            EventSource for Microsoft-Azure-EventHubs-Processor traces.
+            
+            When defining Start/Stop tasks, the StopEvent.Id must be exactly StartEvent.Id + 1.
+            
+            Do not explicity include the Guid here, since EventSource has a mechanism to automatically
+            map to an EventSource Guid based on the Name (Microsoft-Azure-EventHubs-Processor).
+            </summary>
+        </member>
+    </members>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>YVgVcX2VHFUBVgqJoUv+KfGa5F4=</DigestValue></Reference></SignedInfo><SignatureValue>GKnEs+hPeu6VPAe2kHEelvKButeQ04e4EZcwrjpapZLamkizfBYVWtfNhXmkphGfgl3Wh0qiJ4UvShmmtpGq0EUDLLf46RAXEzBNP1sPZHWwe074Rx/35L9wtL5yFhGCHEdqxaVimrgSiXvD8Ly99MNJ/ATWEsmZ7zZLt9vuDnw+DXtW9eu6A3UQQ5kr91ld2LW0hbGkXf32INu/cq3h3/G1j8DtMmeteQFDAYshB4ivkkT1Uy9rEDcZwoHRDKdWNc6QAeu+SN2PAOAig13R4UacyAHPpPoGSQha8W2vCZfdbqk3QOvc4qn8JQyPLgYmWM9KPbwl6Rft6DX00ELFaw==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>m1K+Tyy0HVPLPV0jHraDo5/A5UrgV7PC+C3WipFfzBLODN0Ct0Z49Gub3ufLICGP1D4OJZRyOnhjZi61X+Hbl/2IjqiIl1VMHR4+qWlJLRNj+X7DparTv3/CBzkhMGY2lZdvp96rpRL2heloKGkmmxqet6/sU3hvw8wxMIf29zYrMEBZSEaAUajNDIDd40qeLXRV7OanRHrVE770wiR9DP0zzeYjX5rN1CltAtUyWmonz7DJAYuUr+UMi3offSITg4byWkvThGNXGmtJeDpU6Y/hhcblP5Yl5175yMvHofLyGw0iW7kv/Izp2yjEVRe26PTXes/9nNOP7ul2KoKMoQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIE2zCCA8OgAwIBAgITMwAAAbHd7bpU6WW4XwABAAABsTANBgkqhkiG9w0BAQUFADB5MQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMSMwIQYDVQQDExpNaWNyb3NvZnQgQ29kZSBTaWduaW5nIFBDQTAeFw0xODA3MTIyMDExMTlaFw0xOTA3MjYyMDExMTlaMHQxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xHjAcBgNVBAMTFU1pY3Jvc29mdCBDb3Jwb3JhdGlvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJtSvk8stB1Tyz1dIx62g6OfwOVK4Fezwvgt1oqRX8wSzgzdArdGePRrm97nyyAhj9Q+DiWUcjp4Y2YutV/h25f9iI6oiJdVTB0ePqlpSS0TY/l+w6Wq079/wgc5ITBmNpWXb6feq6US9oXpaChpJpsanrev7FN4b8PMMTCH9vc2KzBAWUhGgFGozQyA3eNKni10Vezmp0R61RO+9MIkfQz9M83mI1+azdQpbQLVMlpqJ8+wyQGLlK/lDIt6H30iE4OG8lpL04RjVxprSXg6VOmP4YXG5T+WJede+cjLx6Hy8hsNIlu5L/yM6dsoxFUXtuj013rP/ZzTj+7pdiqCjKECAwEAAaOCAV8wggFbMBMGA1UdJQQMMAoGCCsGAQUFBwMDMB0GA1UdDgQWBBREE7QCnXc+kFVx9eQcf6wXFM8+czBQBgNVHREESTBHpEUwQzEpMCcGA1UECxMgTWljcm9zb2Z0IE9wZXJhdGlvbnMgUHVlcnRvIFJpY28xFjAUBgNVBAUTDTIyOTgwMys0Mzc5NTAwHwYDVR0jBBgwFoAUyxHoytK0FlgByTcuMxYWuUyaCh8wVgYDVR0fBE8wTTBLoEmgR4ZFaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraS9jcmwvcHJvZHVjdHMvTWljQ29kU2lnUENBXzA4LTMxLTIwMTAuY3JsMFoGCCsGAQUFBwEBBE4wTDBKBggrBgEFBQcwAoY+aHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraS9jZXJ0cy9NaWNDb2RTaWdQQ0FfMDgtMzEtMjAxMC5jcnQwDQYJKoZIhvcNAQEFBQADggEBAIOp8qYzxaF7HNJegK7spKbD6ShdVyUjjd0lCWlw6E1pFi+UuwXZm4DsWdBoZBuDNKjcz2ONnWt2APV7r0J0B8X8kcDirEUzll2x/fqORrJJ4kMGGZiFcXjTnunblRZBMTRwLEOWogJ3qS89YUpjWfGXfdFSlWCFqLwbRQc/2cGP91D1uX4IieRCxFiOQcCVOEkf1x34ME8pLztHWZI37pch7RdmkBwvLW1r/wt15aoS3fqvxBG04CEyWr8FzkX5P41Wrs5R1syufQQZMBLyv59IJpwOAA0oraXeRC3M1If/lEmVVwxNNJwjCt3DjTIJ9L01KMXe0Ig/qRIToTBwoBE=</X509Certificate><X509Certificate>MIIFvDCCA6SgAwIBAgIKYTMmGgAAAAAAMTANBgkqhkiG9w0BAQUFADBfMRMwEQYKCZImiZPyLGQBGRYDY29tMRkwFwYKCZImiZPyLGQBGRYJbWljcm9zb2Z0MS0wKwYDVQQDEyRNaWNyb3NvZnQgUm9vdCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkwHhcNMTAwODMxMjIxOTMyWhcNMjAwODMxMjIyOTMyWjB5MQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMSMwIQYDVQQDExpNaWNyb3NvZnQgQ29kZSBTaWduaW5nIFBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALJyWVwZMGS/HZpgICBCmXZTbD4b1m/My/Hqa/6XFhDg3zp0gxq3L6Ay7P/ewkJOI9VyANs1VwqJyq4gSfTwaKxNS42lvXlLcZtHB9r9Jd+ddYjPqnNEf9eB2/O98jakyVxF3K+tPeAoaJcap6Vyc1bxF5Tk/TWUcqDWdl8ed0WDhTgW0HNbBbpnUo2lsmkv2hkL/pJ0KeJ2L1TdFDBZ+NKNYv3LyV9GMVC5JxPkQDDPcikQKCLHN049oDI9kM2hOAaFXE5WgigqBTK3S9dPY+fSLWLxRT3nrAgA9kahntFbjCZT6HqqSvJGzzc8OJ60d1ylF56NyxGPVjzBrAlfA9MCAwEAAaOCAV4wggFaMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFMsR6MrStBZYAck3LjMWFrlMmgofMAsGA1UdDwQEAwIBhjASBgkrBgEEAYI3FQEEBQIDAQABMCMGCSsGAQQBgjcVAgQWBBT90TFO0yaKleGYYDuoMW+mPLzYLTAZBgkrBgEEAYI3FAIEDB4KAFMAdQBiAEMAQTAfBgNVHSMEGDAWgBQOrIJgQFYnl+UlE/wq4QpTlVnkpDBQBgNVHR8ESTBHMEWgQ6BBhj9odHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpL2NybC9wcm9kdWN0cy9taWNyb3NvZnRyb290Y2VydC5jcmwwVAYIKwYBBQUHAQEESDBGMEQGCCsGAQUFBzAChjhodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpL2NlcnRzL01pY3Jvc29mdFJvb3RDZXJ0LmNydDANBgkqhkiG9w0BAQUFAAOCAgEAWTk+fyZGr+tvQLEytWrrDi9uqEn361917Uw7LddDrQv+y+ktMaMjzHxQmIAhXaw9L0y6oqhWnONwu7i0+Hm1SXL3PupBf8rhDBdpy6WcIC36C1DEVs0t40rSvHDnqA2iA6VW4LiKS1fylUKc8fPv7uOGHzQ8uFaa8FMjhSqkghyT4pQHHfLiTviMocroE6WRTsgb0o9ylSpxbZsa+BzwU9ZnzCL/XB3Nooy9J7J5Y1ZEolHN+emjWFbdmwJFRC9f9Nqu1IIybvyklRPk62nnqaIsvsgrEA5ljpnb9aL6EiYJZTiU8XofSrvR4Vbo0HiWGFzJNRZf3ZMdSY4tvq00RBzuEBUaAF3dNVshzpjHCe6FDoxPbQ4TTj18KUicctHzbMrB7HCjV5JXfZSNoBtIA1r3z6NnCnSlNu0tLxfI5nI3EvRvsTxngvlSso0zFmUeDordEN5k9G/ORtTTF+l5xAS00/ss3x+KnqwK+xMnQK3k+eGpf0a7B2BHZWBATrBC7E7ts3Z52Ao0CW0cgDEf4g5U3eWh++VHEK1kmP9QFi58vwUheuKVQSdpw5OPlcmN2Jshrg1cnPCiroZogwxqLbt2awAdlq3yFnv2FoMkuYjPaqhHMS+a3ONxPdcAfmJH0c6IybgY+g5yjcGjPa8CQGr/aZuW4hCoELQ3UAjWwz0=</X509Certificate><X509Certificate>MIIFmTCCA4GgAwIBAgIQea0WoUqgpa1Mc1j0BxMuZTANBgkqhkiG9w0BAQUFADBfMRMwEQYKCZImiZPyLGQBGRYDY29tMRkwFwYKCZImiZPyLGQBGRYJbWljcm9zb2Z0MS0wKwYDVQQDEyRNaWNyb3NvZnQgUm9vdCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkwHhcNMDEwNTA5MjMxOTIyWhcNMjEwNTA5MjMyODEzWjBfMRMwEQYKCZImiZPyLGQBGRYDY29tMRkwFwYKCZImiZPyLGQBGRYJbWljcm9zb2Z0MS0wKwYDVQQDEyRNaWNyb3NvZnQgUm9vdCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDzXfqAZ9Rap6kMLJAg0DUIPHWEzbcHiZyJ2t7Ow2D6kWhanpRxKRh2fMLgyCV2lA5Y+gQ0Nubfr/eAuulYCyuT5Z0F43cikfc0ZDwikR1e4QmQvBT+/HVYGeF5tweSo66IWQjYnwfKA1j8aCltMtfSqMtL/OELSDJP5uu4rU/kXG8TlJnbldV126gat5SRtHdb9UgMj2p5fRRwBH1tr5D12nDYR7e/my9s5wW34RFgrHmRFHzF1qbk4X7Vw37lktI8ALU2gt554W3ztW74nzPJy1J9c5g224uha6KVl5uj3sJNJv8GlmclBsjnrOTuEjOVMZnINQhONMp5U9W1vmMyWUA2wKVOBE0921sHM+RYv+8/U2TYQlk1V/0PRXwkBE2e1jh0EZcikM5oRHSSb9VLb7CG48c2QqDQ/MHAWvmjYbkwR3GWChawkcBCle8Qfyhq4yofseTNAz93cQTHIPxJDx1FiKTXy36IrY4t7EXbxFEEySr87IaemhGXW97OU4jm4rf9rJXCKEDb7wSQ34EzOdmyRaUjhwalVYkxuwYtYA5BGH0fLrWXyxHrFdUkpZTvFRSJ/Utz+jJb/NEzAPlZYnAHMuouq0Ate8rdIWcbMJmPFqojqEHRsG4RmzbE3kB0nOFYZcFgHnpbOMiPuwQmfNQWQOW2a2yqhv0Av87BNQIDAQABo1EwTzALBgNVHQ8EBAMCAcYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUDqyCYEBWJ5flJRP8KuEKU5VZ5KQwEAYJKwYBBAGCNxUBBAMCAQAwDQYJKoZIhvcNAQEFBQADggIBAMURTQM6YN1dUhF3j7K7NsiyBb+0t6jYIJ1cEwO2HCL6BhM1tshj1JpHbyZX0lXxBLEmX9apUGigvNK4bszD6azfGc14rFl0rGY0NsQbPmw4TDMOMBINoyb+UVMA/69aToQNDx/kbQUuToVLjWwzb1TSZKu/UK99ejmgN+1jAw/8EwbOFjbUVDuVG1FiOuVNF9QFOZKaJ6hbqr3su77jIIlgcWxWs6UT0G0OI36VA+1oPfLYY7hrTbboMLXhypRL96KqXZkwsj2nwlFsKCABJCcrSwC3nRFrcL6yEIK8DJto0I07JIeqmShynTNfWZC99d6TnjpiWjQ54ohVHbkGsMGJay3XacMZEjaE0Mmg2v8vaXiy5Xra69cMwPe9Yxe4ORM4ojZbe/KFVmodZGLBOOKqv1FmopT1EpxmIhBr8rcwki3yKfA9OxRDaKLxnCk3y844ICVtfGfzfiQSJAMIgUfspZ6X9RjXz7vV73aW7/3O21adlaBC+ZdY4dcxItNfWeY+biIA6kOEtiXb2fMIVmjAZGsdfOy2k6JiV24u2OdYj8QxSSbd3ik1h/UwcXBbFDxpvYkSfesuo/7Yf56CWlIKK8FDK9kwiJ/IEPuJjeahhXUzfmye23MTZGJppS99ypZtn/gETTCSPW4hFCHJPeDD/YprnUr90aGdmUN3P7Da</X509Certificate></X509Data></KeyInfo><Object Id="ts-countersig"><X509Data><X509Certificate>MIIE3jCCA8agAwIBAgITMwAAAPsbYY3UX5Y2AQAAAAAA+zANBgkqhkiG9w0BAQUFADB3MQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMSEwHwYDVQQDExhNaWNyb3NvZnQgVGltZS1TdGFtcCBQQ0EwHhcNMTgwODIzMjAyMDA5WhcNMTkxMTIzMjAyMDA5WjCBzjELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1JlZG1vbmQxHjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3JhdGlvbjEpMCcGA1UECxMgTWljcm9zb2Z0IE9wZXJhdGlvbnMgUHVlcnRvIFJpY28xJjAkBgNVBAsTHVRoYWxlcyBUU1MgRVNOOkIxQjctRjY3Ri1GRUMyMSUwIwYDVQQDExxNaWNyb3NvZnQgVGltZS1TdGFtcCBTZXJ2aWNlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsHXCh3UE1NpuGf1HQQvQRfqyUn3+PJcOqO7yLNiTSbKwJ29vNYMF+D6SRc0YKHj3TpVjkxTohrNNTmQAVee5dsixfRFH28CCm7FWuPQmNlDB96Je/hdJ4GzGyRMujSaH0Sp4AG8thrD0SFoAnakA5vJ7IpcSpN5BWdpPaWB2/Hmgm2ONAodzjIXZTi3W4gx+zlkNerJZXJZ0pZcOe4KkPV0luOpD51D84wpT+KA43F2lL+zxC0Ga1/xMYU7WBfT7MM6QJnOkzpqaOaA4ILOT3ge0qpmeN6D0t1XxUFRvV3IsDFpuYZ9hIJOQU3n94pTKjpTMjHUWOZliZmT1s7hlcwIDAQABo4IBCTCCAQUwHQYDVR0OBBYEFJexSUiWMrtyxOzm6pIXrjqzTvWVMB8GA1UdIwQYMBaAFCM0+NlSRnAK7UD7dvuzK7DDNbMPMFQGA1UdHwRNMEswSaBHoEWGQ2h0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2kvY3JsL3Byb2R1Y3RzL01pY3Jvc29mdFRpbWVTdGFtcFBDQS5jcmwwWAYIKwYBBQUHAQEETDBKMEgGCCsGAQUFBzAChjxodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpL2NlcnRzL01pY3Jvc29mdFRpbWVTdGFtcFBDQS5jcnQwEwYDVR0lBAwwCgYIKwYBBQUHAwgwDQYJKoZIhvcNAQEFBQADggEBAEMBH3z15AYduQJzU1hhdxCPsKimm3A6GugnFZVdf6ID4zLWr1kv/eiLIWxj37hAsAjDKXND5HcOO4CLNx5Fi19ynS8qrtjsFrHIOC+8j9H0M/DuyT0sz4nFa78N0BQQo86MMRIVxsbEExXESf0xSoBmkgBn0ATfAeIWU4fchC7acNdVDNr+h/EiKOShvXLNY05z4Huomw7W9uneCZ5c2PxgpTPnSgDuvYul7ScNbolqg3wRxQJFNhrw6yEjdAqdeiWhaDwnwJQp2lN0C7AdOlL30jwjqQ4X/rXr9/69dw9XHY9hih6QoGBGOYjXfHYrs6X9IrCo4BYo39HDBTZw54M=</X509Certificate><X509Certificate>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</X509Certificate></X509Data><CounterSignature ts-format="cms-timestamp-message" xmlns="http://schemas.microsoft.com/xmldsig/timestamp/2003">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</CounterSignature></Object></Signature></doc>

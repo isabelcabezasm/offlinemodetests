@@ -13,7 +13,8 @@ namespace SenderModule
 
     class Program
     {
-         static void Main(string[] args)
+               
+        static void Main(string[] args)
         {
             Init().Wait();
         }
@@ -32,35 +33,56 @@ namespace SenderModule
             ModuleClient ioTHubModuleClient = await ModuleClient.CreateFromEnvironmentAsync(settings);
             await ioTHubModuleClient.OpenAsync();
             Console.WriteLine("IoT Hub module client initialized.");
-            await SendEvents(ioTHubModuleClient);
+
+            await ioTHubModuleClient.SetMethodHandlerAsync("sendMessages", Directmethod1, ioTHubModuleClient);
+            await SendEvents(ioTHubModuleClient, 10);
+            Console.ReadKey();
+            
            
         }
 
-
-        /// <summary>
-
-        /// Module behavior:
-        ///        Sends data periodically (with default frequency of 1/3 seconds).
-        /// </summary>
-
-        static async Task SendEvents(ModuleClient moduleClient)
+        private static async Task<MethodResponse> Directmethod1(MethodRequest methodRequest, object userContext)
         {
-            int count = 1; //messages counter
 
-            while (true)
+            int num_messages = 0;
+            Console.WriteLine("A direct method has arrived! ");
+            var moduleClient = userContext as ModuleClient;
+            if (moduleClient == null)
             {
-
-                var tempData = "{'count':" + count + "}";
-                string dataBuffer = JsonConvert.SerializeObject(tempData);
-                var eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
-                Console.WriteLine($"\t{DateTime.Now.ToLocalTime()}> Sending message: {count}, Body: [{dataBuffer}]");
-                await moduleClient.SendEventAsync("message", eventMessage);
-                count++;
-                await Task.Delay(333);
+                throw new InvalidOperationException("UserContext doesn't contain " + "expected values");
             }
+            String data = Encoding.UTF8.GetString(methodRequest.Data);                
+            Console.WriteLine("Received message: {0}", data);
+
+            int.TryParse(data, out num_messages);
+            if (num_messages != 0)
+            {
+                await SendEvents(moduleClient, num_messages);
+            }
+
+            return new MethodResponse(200);
 
         }
 
+     
+        /// <summary>
+        /// Module behavior:
+        ///        Sends #"num_messages" messages (with default frequency of 1/3 seconds).
+        /// </summary>
+
+        static async Task SendEvents(ModuleClient moduleClient, int num_messages)
+        {
+     
+          for(int i=0;i<num_messages; i++) { 
+
+                var tempData = "{'count':" + i + "}";
+                string dataBuffer = JsonConvert.SerializeObject(tempData);
+                var eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
+                Console.WriteLine($"\t{DateTime.Now.ToLocalTime()}> Sending message: {i}, Body: [{dataBuffer}]");
+                await moduleClient.SendEventAsync("message", eventMessage);
+                await Task.Delay(333);
+            }
+        }
 
     }
 }
