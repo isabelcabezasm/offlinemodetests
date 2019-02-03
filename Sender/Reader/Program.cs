@@ -47,11 +47,35 @@ namespace Reader
 
             config = ReadConfiguration();
 
-            AsyncMain().GetAwaiter().GetResult();
+            while (true) {
 
-            Console.ReadLine();
+                String option;
+                    Console.Write("1- Ask 10 messages\n");
+                    Console.Write("2- Ask 100 messages\n");
+                    Console.Write("3- Ask 1000 messages\n");
+                    option = Console.ReadLine();
 
-            
+                    int num_messages = 0;
+                    switch (option) {
+                        case "1":
+                            num_messages = 10;
+                            break;
+                        case "2":
+                            num_messages = 100;
+                            break;
+                        case "3":
+                            num_messages = 1000;
+                            break;
+                    }
+                
+
+                SendDirectMethodAsync(num_messages).GetAwaiter().GetResult();
+                AsyncMain().GetAwaiter().GetResult();
+
+
+                Console.ReadLine();
+
+            }
         }
 
         private static async Task SendDirectMethodAsync(int num_messages) {
