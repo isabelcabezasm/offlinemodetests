@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.EventHubs;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 
 // This application uses the Microsoft Azure Event Hubs Client for .NET
@@ -17,70 +20,43 @@ namespace Reader
 {
     class Program
     {
-        
+
+        private static Config config;
         private static EventHubClient s_eventHubClient;
 
-        // az iot hub show --query properties.eventHubEndpoints.events.endpoint --name {your IoT Hub name}
-        //Replace the value of the variable with the Event Hubs-compatible endpoint.
-        private readonly static string s_eventHubsCompatibleEndpoint = "{your Event Hubs compatible endpoint}";      
+        public static Config ReadConfiguration()
+        {
 
-        // Event Hub-compatible name
-        // az iot hub show --query properties.eventHubEndpoints.events.path --name {your IoT Hub name}
-        private readonly static string s_eventHubsCompatiblePath = "{your Event Hubs compatible name}";
+            var config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
+            Config config2;
+            // deserialize JSON directly from a file
+            using (StreamReader file = File.OpenText("config.json"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                config2 = (Config)serializer.Deserialize(file, typeof(Config));
+            }
 
+            return config2;
 
-        // az iot hub policy show --name iothubowner --query primaryKey --hub-name {your IoT Hub name}
-        private readonly static string s_iotHubSasKey = "{your iothubowner primary key}";
-        private readonly static string s_iotHubSasKeyName = "iothubowner";
-
-        //az iot hub show-connection-string --hub-name [nombre iothub] --output table
-        static string connectionStringIoTHub = "{your IoT Hub connection string}";
-
-
-
-
+        }
 
 
 
         public static void Main(string[] args)
         {
 
+            config = ReadConfiguration();
+
+            AsyncMain().GetAwaiter().GetResult();
+
+            Console.ReadLine();
+
             
-
-            while (true) {
-
-                String option;
-                    Console.Write("1- Ask 10 messages\n");
-                    Console.Write("2- Ask 100 messages\n");
-                    Console.Write("3- Ask 1000 messages\n");
-                    option = Console.ReadLine();
-
-                    int num_messages = 0;
-                    switch (option) {
-                        case "1":
-                            num_messages = 10;
-                            break;
-                        case "2":
-                            num_messages = 100;
-                            break;
-                        case "3":
-                            num_messages = 1000;
-                            break;
-                    }
-                
-
-                SendDirectMethodAsync(10).GetAwaiter().GetResult();
-                AsyncMain().GetAwaiter().GetResult();
-
-
-                Console.ReadLine();
-
-            }
         }
 
         private static async Task SendDirectMethodAsync(int num_messages) {
 
-            using (var servClient = ServiceClient.CreateFromConnectionString(connectionStringIoTHub))
+            using (var servClient = ServiceClient.CreateFromConnectionString(config.ConnectionStringIoTHub))
             {
                 var methodInvocation = new CloudToDeviceMethod("sendMessages", TimeSpan.FromSeconds(30));
                 methodInvocation.SetPayloadJson(num_messages.ToString());
@@ -94,7 +70,7 @@ namespace Reader
         private static async Task AsyncMain() {
                        
 
-            var connectionString = new EventHubsConnectionStringBuilder(new Uri(s_eventHubsCompatibleEndpoint), s_eventHubsCompatiblePath, s_iotHubSasKeyName, s_iotHubSasKey);
+            var connectionString = new EventHubsConnectionStringBuilder(new Uri(config.EventHubsCompatibleEndpoint), config.EventHubsCompatiblePath, config.IotHubSasKeyName, config.IotHubSasKey);
             s_eventHubClient = EventHubClient.CreateFromConnectionString(connectionString.ToString());
 
 

@@ -46,3 +46,4 @@ C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\Reader\bin\
 C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\Reader\bin\Debug\Microsoft.Azure.EventHubs.Processor.dll
 C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\Reader\bin\Debug\Microsoft.Azure.EventHubs.xml
 C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\Reader\bin\Debug\Microsoft.Azure.EventHubs.Processor.xml
+C:\Users\isacabe\source\repos\isabelcabezasm\offlinemodetests\Sender\Reader\bin\Debug\config.json

@@ -1,0 +1,7 @@
+{
+  "EventHubsCompatibleEndpoint": "sb://ihsuproddbres058dednamespace.servicebus.windows.net/",
+  "EventHubsCompatiblePath": "iothub-ehub-signify-1198378-f5d34c9c84",
+  "IotHubSasKey": "J6CVlJl0itXrdURMIz1e2fLj7uOe0iRYICfpbO6aRfk=",
+  "IotHubSasKeyName": "iothubowner",
+  "ConnectionStringIoTHub": "HostName=signify.azure-devices.net;SharedAccessKeyName=service;SharedAccessKey=lNABhsseI8kCBggTFDaPMX3ywMZQpQaSEriWpAkest4="
+}
