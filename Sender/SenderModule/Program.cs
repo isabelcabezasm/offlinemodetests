@@ -75,11 +75,10 @@ namespace SenderModule
      
           for(int i=0;i<num_messages; i++) { 
 
-                var tempData = "{'count':" + i + "}";
-                string dataBuffer = JsonConvert.SerializeObject(tempData);
-                var eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
-                Console.WriteLine($"\t{DateTime.Now.ToLocalTime()}> Sending message: {i}, Body: [{dataBuffer}]");
-                await moduleClient.SendEventAsync("message", eventMessage);
+                var tempData = "{\"count\":" + i + "}";     
+                var eventMessage = new Message(Encoding.UTF8.GetBytes(tempData));
+                Console.WriteLine($"\t{DateTime.Now.ToLocalTime()}> Sending message: {i}, Body: [{tempData}]");
+                await moduleClient.SendEventAsync(eventMessage);
                 await Task.Delay(333);
             }
         }
