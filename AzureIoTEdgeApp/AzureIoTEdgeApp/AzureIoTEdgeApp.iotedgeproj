@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|AnyCPU">
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|AnyCPU">
+      <Configuration>Release</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>00d3f5c4-18d5-4a09-9ec0-7f128df398f5</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="AzureIoTEdgeProject.targets" />
+  <ItemGroup>
+    <None Include="deployment.template.json" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IoTEdgeModule\IoTEdgeModule.csproj" />
+  </ItemGroup>
+  <Import Project="$(SolutionDir)\packages\Microsoft.VisualStudio.Azure.IoT.Edge.MSBuildTasks.0.1.4\build\AzureIoTEdgeProject.Build.targets" Condition="Exists('$(SolutionDir)\packages\Microsoft.VisualStudio.Azure.IoT.Edge.MSBuildTasks.0.1.4\build\AzureIoTEdgeProject.Build.targets')" />
+  <Import Project="$(SolutionDir)\packages\Microsoft.VisualStudio.Azure.IoT.Edge.MSBuildTasks.0.1.4\build\AzureIoTEdgeProject.Build.props" Condition="Exists('$(SolutionDir)\packages\Microsoft.VisualStudio.Azure.IoT.Edge.MSBuildTasks.0.1.4\build\AzureIoTEdgeProject.Build.props')" />
+</Project>
